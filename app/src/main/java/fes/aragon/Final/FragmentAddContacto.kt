@@ -1,7 +1,12 @@
 package fes.aragon.Final
 
 import android.content.ContentValues.TAG
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,12 +15,23 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import fes.aragon.Final.Modelo.ContactoModelo
 import fes.aragon.Final.Modelo.UsuarioModelo
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,14 +50,17 @@ class FragmentAddContacto : DialogFragment() {
 
     private lateinit var btnSalir: Button
     private lateinit var btnEscribir: Button
+    private lateinit var btnTomarFoto: Button
 
-    private  lateinit var nombre: TextView
-    private  lateinit var telefono: TextView
-    private  lateinit var correo: TextView
-    private  lateinit var imagenNombre: TextView
-    private  lateinit var camara: Button
+    private lateinit var nombre: TextView
+    private lateinit var telefono: TextView
+    private lateinit var correo: TextView
+    private lateinit var imagenNombre: TextView
+    private lateinit var camara: Button
+    private lateinit var currentPhotoPath: String
 
     private val db = FirebaseFirestore.getInstance()
+    private val storage = Firebase.storage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,31 +75,39 @@ class FragmentAddContacto : DialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        var view =  inflater.inflate(R.layout.fragment_add_contacto, container, false)
+        var view = inflater.inflate(R.layout.fragment_add_contacto, container, false)
 
         nombre = view.findViewById(R.id.nombre)
         telefono = view.findViewById(R.id.telefono)
         correo = view.findViewById(R.id.correo)
         imagenNombre = view.findViewById(R.id.imagenNombre)
-        camara = view.findViewById(R.id.camara)
 
+        btnTomarFoto = view.findViewById(R.id.camara)
         btnEscribir = view.findViewById(R.id.almacenar)
         btnSalir = view.findViewById(R.id.cancelar)
 
-        btnEscribir.setOnClickListener{
+
+        btnTomarFoto.setOnClickListener {
+
+        }
+
+        btnEscribir.setOnClickListener {
             //binding.username.text.isNotEmpty()
             if (nombre.text.isBlank() && (telefono.text.isNotBlank()) || correo.text.isNotBlank()) {
                 agregarContacto()
+                dismiss()
+            } else {
+                Toast.makeText(activity, "Por favor llene los campos", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "Sign in successful", Toast.LENGTH_SHORT).show()
             }
-            dismiss()
         }
+
         btnSalir.setOnClickListener {
             dismiss()
         }
 
-        return  view
+        return view
     }
-
     private fun agregarContacto() {
         val contacto = ContactoModelo(
             nombre.text.toString(),
