@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Directorio de contactos</string>
+    <string name="descripcion">descripcion</string>
+    <string name="identificador">Identificador</string>
+    <string name="usuario">Usuario</string>
+    <string name="credenciales">Credenciales</string>
+    <string name="clave">Clave</string>
+    <string name="entrar">Entrar</string>
+    <string name="bienvenido">Bienvenido..</string>
+    <string name="cerrar_sesion">Cerrar sesion</string>
+    <string name="inscribirse">Inscribirse</string>
+    <string name="valido">Usuario aceptado</string>
+    <string name="file_preferencia">fes.aragon.autentifiacion.PREFERENCE_FILE_KEY</string>
+    <string name="nombre">Nombre</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="registrar_usuario">Registrar Usuario</string>
+    <string name="correo">Correo</string>
+    />
+</resources>
