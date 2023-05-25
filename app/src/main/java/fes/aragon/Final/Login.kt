@@ -58,18 +58,6 @@ class Login : AppCompatActivity() {
             ).addOnCompleteListener {
                 if (it.isSuccessful){
                     FirestoreUsuario()
-                    /*val usuario = UsuarioModelo(
-                        binding.username.text.toString(), //correo
-                        binding.nombre.text.toString(), //nombre
-                        FirebaseAuth.getInstance().currentUser?.uid.toString())
-                    db.collection("usuarios")
-                        .document(binding.username.text.toString()).set(usuario)
-                        .addOnSuccessListener { referencia->
-                            println("Como que si") }
-                        .addOnFailureListener {
-                                e -> println("Como que no")
-                            Log.w(ContentValues.TAG, "Error writing document", e) }*/
-
                     opciones(it.result?.user?.email ?: "", TipoProvedor.CORREO)
                 }else{
                     alert("Problema al crear usuario")

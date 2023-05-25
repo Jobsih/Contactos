@@ -22,9 +22,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
+        <androidx.cardview.widget.CardView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:cardCornerRadius="250dp"
+            android:layout_gravity="center"
+            app:cardBackgroundColor="@color/white">
+
+            <ImageView
+                android:id="@+id/preview"
+                android:layout_width="170dp"
+                android:layout_height="170dp"
+                android:src="@drawable/sinfoto"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"/>
+
+        </androidx.cardview.widget.CardView>
+
         <EditText
             android:id="@+id/nombre"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="48dp"
             android:layout_marginHorizontal="10dp"
             android:autofillHints="nombre"
@@ -61,18 +78,6 @@
             android:textColorHighlight="#FAF6F6"
             android:textColorHint="#F3F2F2"/>
 
-        <EditText
-            android:id="@+id/imagenNombre"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:ems="20"
-            android:hint="Fotografia"
-            android:layout_marginHorizontal="10dp"
-
-            android:inputType="none"
-            android:textColor="@color/white"
-            android:textColorHighlight="#FAF6F6"
-            android:textColorHint="#F3F2F2"/>
         <Button
             android:id="@+id/camara"
             android:layout_width="match_parent"

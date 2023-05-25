@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,6 +32,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.google.firebase.storage.StorageReference
+import com.squareup.picasso.Picasso
 import fes.aragon.Final.Modelo.ContactoModelo
 import fes.aragon.Final.Modelo.UsuarioModelo
 import java.io.ByteArrayOutputStream
@@ -61,10 +63,12 @@ class FragmentAddContacto : DialogFragment() {
     private lateinit var nombre: TextView
     private lateinit var telefono: TextView
     private lateinit var correo: TextView
-    private lateinit var imagenNombre: TextView
+    private lateinit var imagenPreview: ImageView
     private lateinit var camara: Button
     private lateinit var currentPhotoPath: String
-    private lateinit var miUrl: String
+    //private lateinit var miUrl: String
+    private var miUrl:String = ""
+    private lateinit var recien :String
 
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
@@ -88,7 +92,7 @@ class FragmentAddContacto : DialogFragment() {
         nombre = view.findViewById(R.id.nombre)
         telefono = view.findViewById(R.id.telefono)
         correo = view.findViewById(R.id.correo)
-        imagenNombre = view.findViewById(R.id.imagenNombre)
+        imagenPreview = view.findViewById(R.id.preview)
 
         btnTomarFoto = view.findViewById(R.id.camara)
         btnEscribir = view.findViewById(R.id.almacenar)
@@ -122,19 +126,26 @@ class FragmentAddContacto : DialogFragment() {
             telefono.text.toString(),
             correo.text.toString(),
             //Placeholder
-            miUrl
+            miUrl,
+            ""
         )
 
         val nombreUsuario = FirebaseAuth.getInstance().currentUser?.email.toString()
         val datosUsuario = db.collection("usuarios").document(nombreUsuario)
         val datosContacto = datosUsuario.collection("contactos")
-        datosContacto.document(contacto.nombre.toString())
-            .set(contacto)
+        datosContacto.add(contacto)
+       // datosContacto.document(contacto.nombre.toString())
+            //.set(contacto)
             .addOnSuccessListener { referencia ->
-                println("Documento escrito con exito")
+                recien = referencia.id
+                datosContacto.document(recien).update(mapOf(
+                    "id" to recien,
+                ))
+
             }.addOnFailureListener { e ->
                 println("Error al escribir el documento: " + e)
             }
+
     }
 
     companion object {
@@ -197,6 +208,7 @@ class FragmentAddContacto : DialogFragment() {
             if (task.isSuccessful) {
                 val downloadUri = task.result
                 miUrl = downloadUri.toString()
+                Picasso.get().load(miUrl).placeholder(R.drawable.sinfoto).error(R.drawable.sinfoto).into(imagenPreview)
                 // Utiliza la URL del archivo como sea necesario
             } else {
                 // Error al obtener la URL del archivo
