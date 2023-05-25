@@ -1,8 +1,11 @@
 package fes.aragon.Final
 
+import android.Manifest
+import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -25,9 +28,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.StorageReference
 import fes.aragon.Final.Modelo.ContactoModelo
 import fes.aragon.Final.Modelo.UsuarioModelo
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -58,9 +64,11 @@ class FragmentAddContacto : DialogFragment() {
     private lateinit var imagenNombre: TextView
     private lateinit var camara: Button
     private lateinit var currentPhotoPath: String
+    private lateinit var miUrl: String
 
     private val db = FirebaseFirestore.getInstance()
-    private val storage = Firebase.storage
+    private val storage = FirebaseStorage.getInstance()
+    private var storageReference: StorageReference = storage.reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +96,7 @@ class FragmentAddContacto : DialogFragment() {
 
 
         btnTomarFoto.setOnClickListener {
-
+            checkCameraPermission()
         }
 
         btnEscribir.setOnClickListener {
@@ -114,7 +122,7 @@ class FragmentAddContacto : DialogFragment() {
             telefono.text.toString(),
             correo.text.toString(),
             //Placeholder
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-QLlz4u1u01iFebjTQZSWYfsK2CYDKw11xhXjosPB-vLHPJqHknakuJT13vMrkZsbqtk"
+            miUrl
         )
 
         val nombreUsuario = FirebaseAuth.getInstance().currentUser?.email.toString()
@@ -130,14 +138,8 @@ class FragmentAddContacto : DialogFragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FragmentAddContacto.
-         */
+        private const val REQUEST_IMAGE_CAPTURE = 1
+        private const val REQUEST_PERMISSION_CAMERA = 2
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
@@ -148,4 +150,68 @@ class FragmentAddContacto : DialogFragment() {
                 }
             }
     }
+
+    // Función para verificar y solicitar los permisos de la cámara
+    private fun checkCameraPermission() {
+        val permission = Manifest.permission.CAMERA
+        val permissionGranted = PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(requireContext(), permission) != permissionGranted) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(permission), REQUEST_PERMISSION_CAMERA)
+        } else {
+            openCamera()
+        }
+    }
+
+    // Función para abrir la cámara y capturar la foto
+    private fun openCamera() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (takePictureIntent.resolveActivity(requireActivity().packageManager) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+        }
+    }
+
+    // Función para guardar la foto en Firebase Storage
+    private fun uploadPhotoToStorage(bitmap: Bitmap) {
+        // Comprime el bitmap en un formato adecuado, como JPEG
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos)
+        val data = baos.toByteArray()
+
+        // Genera un nombre único para la imagen
+        val fileName = "image_${System.currentTimeMillis()}.jpg"
+
+        // Crea una referencia al archivo en Firebase Storage
+        val imageRef = storageReference.child("images/$fileName")
+
+        // Sube los datos de la imagen a Firebase Storage
+        val uploadTask = imageRef.putBytes(data)
+        uploadTask.continueWithTask { task ->
+            if (!task.isSuccessful) {
+                task.exception?.let {
+                    throw it
+                }
+            }
+            // Continúa con la tarea para obtener la URL del archivo
+            imageRef.downloadUrl
+        }.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val downloadUri = task.result
+                miUrl = downloadUri.toString()
+                // Utiliza la URL del archivo como sea necesario
+            } else {
+                // Error al obtener la URL del archivo
+            }
+        }
+    }
+
+    // Función para recibir el resultado de la captura de la foto
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            val imageBitmap = data?.extras?.get("data") as Bitmap
+            // Llama a la función para subir la foto a Firebase Storage
+            uploadPhotoToStorage(imageBitmap)
+        }
+    }
+
 }
