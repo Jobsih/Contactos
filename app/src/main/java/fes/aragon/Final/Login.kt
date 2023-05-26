@@ -58,7 +58,7 @@ class Login : AppCompatActivity() {
                     .isEmpty()
             ) {
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(
-                    binding.username.text.toString(),
+                    binding.username.text.toString().filterNot { it.isWhitespace() },
                     binding.password.text.toString()
                 ).addOnCompleteListener {
                     if (it.isSuccessful) {

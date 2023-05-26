@@ -46,7 +46,7 @@ class UpdateUser : AppCompatActivity() {
         //Crea un nuevo usuario
         if (binding.correo.text.isNotEmpty() && binding.password.text.isNotEmpty()){
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(
-                binding.correo.text.toString(),
+                binding.correo.text.toString().filterNot { it.isWhitespace() },
                 binding.password.text.toString()
             ).addOnCompleteListener {
                 if (it.isSuccessful){
