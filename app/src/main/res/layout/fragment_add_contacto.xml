@@ -27,9 +27,10 @@
             android:layout_height="150dp"
             app:cardCornerRadius="250dp"
             android:layout_gravity="center"
-            app:cardBackgroundColor="@color/white">
+            app:cardBackgroundColor="@color/white"
+            android:layout_marginVertical="10dp">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/preview"
                 android:layout_width="170dp"
                 android:layout_height="170dp"

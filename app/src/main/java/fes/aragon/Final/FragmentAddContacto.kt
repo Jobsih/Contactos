@@ -105,7 +105,7 @@ class FragmentAddContacto : DialogFragment() {
 
         btnEscribir.setOnClickListener {
             //binding.username.text.isNotEmpty()
-            if (nombre.text.isBlank() && (telefono.text.isNotBlank()) || correo.text.isNotBlank()) {
+            if (nombre.text.isNotBlank() && (telefono.text.isNotBlank()) or correo.text.isNotBlank()) {
                 agregarContacto()
                 dismiss()
             } else {
@@ -141,9 +141,11 @@ class FragmentAddContacto : DialogFragment() {
                 datosContacto.document(recien).update(mapOf(
                     "id" to recien,
                 ))
+                Log.d(TAG, "Editado con exito")
 
             }.addOnFailureListener { e ->
                 println("Error al escribir el documento: " + e)
+                Log.d(TAG, "Error al Editar")
             }
 
     }

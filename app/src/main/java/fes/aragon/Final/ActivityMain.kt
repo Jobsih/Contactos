@@ -32,6 +32,8 @@ class ActivityMain : AppCompatActivity(), OnClickListener {
     var nameU:String=""
     var phoneU:String=""
     var emailU:String=""
+    var fotoU:String=""
+    var emailUsuario:String=""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,23 +111,31 @@ class ActivityMain : AppCompatActivity(), OnClickListener {
         binding.editar.setOnClickListener {
             if (!nameU.isEmpty() && !phoneU.isEmpty() && !emailU.isEmpty()) {
                 val bundle = Bundle()
-                bundle.putString("id", userEmail.toString())
+                bundle.putString("id",idU)
                 bundle.putString("nombre", nameU)
                 bundle.putString("telefono", phoneU)
                 bundle.putString("correo", emailU)
-                var fr = FragmentAddContacto()
+                bundle.putString("url",fotoU)
+                var fr = FragmentEditarContacto()
                 fr.arguments = bundle
                 fr.isCancelable = false
                 fr.show(supportFragmentManager, "Datos de entrada")
+            }else{
+                Toast.makeText(this, "Seleccione un contacto", Toast.LENGTH_SHORT).show()
             }
         }
         binding.eliminar.setOnClickListener{
-            val bundle = Bundle()
-            bundle.putString("id", nameU.toString())
-            bundle.putString("delete", idU)
-            var fr = FragmentEliminarContacto()
-            fr.arguments = bundle
-            fr.show(supportFragmentManager, "Datos de entrada")
+            if(!nameU.isEmpty() && !phoneU.isEmpty() && !emailU.isEmpty()){
+                val bundle = Bundle()
+                bundle.putString("nombre", nameU)
+                bundle.putString("id", idU)
+                bundle.putString("foto", fotoU)
+                var fr = FragmentEliminarContacto()
+                fr.arguments = bundle
+                fr.show(supportFragmentManager, "Datos de entrada")
+            }else{
+                Toast.makeText(this, "Seleccione un contacto", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -136,6 +146,8 @@ class ActivityMain : AppCompatActivity(), OnClickListener {
         nameU= contact.nombre.toString()
         phoneU= contact.telefono.toString()
         emailU= contact.correo.toString()
+        fotoU= contact.url.toString()
+        emailUsuario= auth.currentUser?.email.toString()
     }
 }
 

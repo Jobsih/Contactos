@@ -6,6 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,7 +18,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import fes.aragon.Final.Modelo.UsuarioModelo
@@ -36,6 +37,7 @@ class Login : AppCompatActivity() {
         validate()
         sesiones()
         auth = Firebase.auth
+
     }
 
     private fun sesiones() {
@@ -49,43 +51,7 @@ class Login : AppCompatActivity() {
     }
 
     private fun validate() {
-//por correo
-        //Crea un nuevo usuario
-        if (binding.username.text.isNotEmpty() && binding.password.text.isNotEmpty()){
-            FirebaseAuth.getInstance().createUserWithEmailAndPassword(
-                binding.username.text.toString(),
-                binding.password.text.toString()
-            ).addOnCompleteListener {
-                if (it.isSuccessful){
-                    FirestoreUsuario()
-                    opciones(it.result?.user?.email ?: "", TipoProvedor.CORREO)
-                }else{
-                    alert("Problema al crear usuario")
-                }
-            }
-        }
-
-        binding.updateUser.setOnClickListener {
-            if (!binding.username.text.toString().isEmpty() && !binding.password.text.toString().isEmpty()) {
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(
-                    binding.username.text.toString(),
-                    binding.password.text.toString()
-                ).addOnCompleteListener {
-                    if (it.isComplete) {
-                        try {
-                            FirestoreUsuario()
-
-                            opciones(it.result?.user?.email ?: "", TipoProvedor.CORREO)
-                        } catch (e: Exception) {
-                            alert("Problema al registrar usuario")
-                        }
-                    } else {
-                        alert("Problema al registrar usuario")
-                    }
-                }
-            }
-        }
-//establecer enlace
+        //establecer enlace
         //Inicia sesion existente
         binding.loginbtn.setOnClickListener {
             if (!binding.username.text.toString().isEmpty() && !binding.password.text.toString()
@@ -104,27 +70,7 @@ class Login : AppCompatActivity() {
                 }
             }
         }
-
         iniciarActividad()
-    }
-
-    private fun FirestoreUsuario() {
-        // Firestore
-        val usuario = UsuarioModelo(
-            binding.username.text.toString(), //correo
-            binding.nombre.text.toString(), //nombre
-            FirebaseAuth.getInstance().currentUser?.uid.toString()
-        )
-
-        db.collection("usuarios")
-            .document(binding.username.text.toString()).set(usuario)
-            .addOnSuccessListener { referencia ->
-                println("Llegó")
-            }
-            .addOnFailureListener { e ->
-                println("No llegó")
-                Log.w(ContentValues.TAG, "Error writing document", e)
-            }
     }
 
     private fun alert(msg: String) {
@@ -178,5 +124,10 @@ class Login : AppCompatActivity() {
                     }
                 }
             }
+    }
+    fun Inscribir(view: View) {
+        var intent: Intent = Intent(this, UpdateUser::class.java).apply {
+        }
+        startActivity(intent)
     }
 }

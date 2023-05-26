@@ -6,15 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login4"
-    android:id="@+id/layoutAcceso"
-    tools:context=".Login">
+    android:id="@+id/layoutUpdate"
+    tools:context=".UpdateUser">
+
     <TextView
-        android:id="@+id/signin"
+        android:id="@+id/titulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:text="@string/credenciales"
+        android:text="@string/registro"
         android:textColor="@color/white"
         android:textSize="35sp"
         android:textStyle="bold"
@@ -23,11 +24,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/username"
+        android:id="@+id/correo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="84dp"
         android:background="#30ffffff"
         android:drawableLeft="@drawable/ic_baseline_person_24"
         android:drawablePadding="20dp"
@@ -38,9 +39,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.526"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signin" />
+        app:layout_constraintTop_toBottomOf="@+id/titulo" />
 
-   <!-- <EditText
+    <EditText
         android:id="@+id/nombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,14 +57,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.842"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signin" />-->
+        app:layout_constraintTop_toBottomOf="@+id/titulo" />
 
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="80dp"
         android:background="#30ffffff"
         android:drawableLeft="@drawable/ic_baseline_password_24"
         android:drawablePadding="20dp"
@@ -73,36 +74,34 @@
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.473"
+        app:layout_constraintHorizontal_bias="0.842"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username" />
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/loginbtn"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/password"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
-        android:backgroundTint="@color/boton"
-        android:text="@string/entrar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.059"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password" />
+        app:layout_constraintTop_toBottomOf="@+id/correo" />
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:id="@+id/updateUser"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_below="@id/password"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
+        android:layout_marginEnd="30dp"
         android:backgroundTint="@color/boton"
-        android:onClick="Inscribir"
         android:text="@string/inscribirse"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.937"
-        app:layout_constraintStart_toStartOf="@+id/loginbtn"
+        app:layout_constraintTop_toBottomOf="@+id/password" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/volver"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/password"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@color/boton"
+        android:text="@string/cancelar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.059"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
