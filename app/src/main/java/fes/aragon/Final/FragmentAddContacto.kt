@@ -105,7 +105,7 @@ class FragmentAddContacto : DialogFragment() {
 
         btnEscribir.setOnClickListener {
             //binding.username.text.isNotEmpty()
-            if (nombre.text.isNotBlank() && (telefono.text.isNotBlank()) or correo.text.isNotBlank()) {
+            if (nombre.text.isNotBlank() && (telefono.text.isNotBlank() or correo.text.isNotBlank())) {
                 agregarContacto()
                 dismiss()
             } else {
